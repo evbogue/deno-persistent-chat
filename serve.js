@@ -1,5 +1,5 @@
 import { serveDir } from 'https://deno.land/std/http/file_server.ts'
-import { open } from 'https://raw.githubusercontent.com/evbogue/deno-secure-chat/master/sbog.js'
+import { open } from './sbog.js'
 
 const sockets = new Set()
 const channel = new BroadcastChannel("")
