@@ -43,8 +43,6 @@ export async function open (msg) {
     raw: msg
   }
 
-  obj.text = await find(obj.data)
-
   return obj
 }
 
