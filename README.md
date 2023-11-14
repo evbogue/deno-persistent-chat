@@ -1,6 +1,6 @@
-### secure and/or private chat with Deno
+### deno persistent chat 
 
-In this example we us ed2curve to send private messages between ed25519 keypairs.
+In this example we store messages on the Deno relay using Deno.kv
 
 The message protocol is the same as the one used by [bogbook](https://github.com/evbogue/bogbook).
 
@@ -12,7 +12,7 @@ deno run --allow-all --unstable serve.js
 
 Try it on Deno Deploy:
 
-https://deno-private-chat.deno.dev/
+https://deno-persistent-chat.deno.dev/
 
 ---
 MIT
