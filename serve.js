@@ -27,6 +27,7 @@ channel.onmessage = async e => {
   } 
   if (e.data.length === 44) {
     const msg = await kv.get([e.data])
+    console.log(msg)
     if (msg) {
       const opened = await open(msg.value)
       const blob = await kv.get([opened.data])
