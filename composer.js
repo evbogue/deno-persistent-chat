@@ -4,6 +4,19 @@ import { ed25519 } from './keys.js'
 import { publish, open } from './sbog.js' 
 import { find } from './blob.js'
 import { box } from './sbox.js'
+import { cachekv } from './lib/cachekv.js'
+
+const getPrevious = await cachekv.get('latest')
+
+let previous
+
+if (!getPrevious) { previous = {} }
+
+if (getPrevious) {
+  previous = JSON.parse(getPrevious)
+}
+
+console.log(previous)
 
 const pubkey = await ed25519.pubkey()
 
@@ -29,17 +42,22 @@ const textarea = h('textarea', {placeholder: 'Write a message', style: 'width: 9
 const button = h('button', {
   onclick: async () => {
     if (to.value && to.value.length === 44 && textarea.value) {
+      const previousHash = previous.msg.hash
       const boxed = await box(textarea.value, to.value)
-      const signed = await publish(boxed)
+      const signed = await publish(boxed, previousHash)
       const opened = await open(signed)
       ws.send(JSON.stringify({
         type: 'post',
+        latest: true,
         payload: signed,
         boxed
       }))
+      previous.msg = opened 
+      cachekv.put('latest', JSON.stringify(previous))  
       textarea.value = ''
     } else if (!to.value && textarea.value) {
-      const signed = await publish(textarea.value)  
+      const previousHash = previous.msg.hash
+      const signed = await publish(textarea.value, previousHash)  
       const opened = await open(signed)
       const blob = await find(opened.data)
       ws.send(JSON.stringify({
@@ -48,6 +66,8 @@ const button = h('button', {
         payload: signed,
         blob
       }))
+      previous.msg = opened
+      cachekv.put('latest', JSON.stringify(previous))  
       textarea.value = ''
     } 
   }

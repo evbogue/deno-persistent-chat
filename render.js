@@ -31,7 +31,7 @@ export const render = async (m) => {
     ts
   ])
 
-  const div = h('div', [
+  const div = h('div', {id: m.hash}, [
     right, 
     pubkey,
     ' ', 
