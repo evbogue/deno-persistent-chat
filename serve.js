@@ -27,15 +27,16 @@ channel.onmessage = async e => {
   } 
   if (e.data.length === 44) {
     const msg = await kv.get([e.data])
-    const opened = await open(msg.value)
-    const blob = await kv.get([opened.data])
-    
-    const tosend = {
-      type: 'post',
-      payload: msg.value,
-      blob: blob.value
+    if (msg) {
+      const opened = await open(msg.value)
+      const blob = await kv.get([opened.data])
+      const tosend = {
+        type: 'post',
+        payload: msg.value,
+        blob: blob.value
+      }
+      sockets.forEach(s => s.send(JSON.stringify(tosend)))
     }
-    sockets.forEach(s => s.send(JSON.stringify(tosend)))
   }
 }
 
