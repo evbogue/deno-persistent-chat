@@ -42,7 +42,10 @@ const textarea = h('textarea', {placeholder: 'Write a message', style: 'width: 9
 const button = h('button', {
   onclick: async () => {
     if (to.value && to.value.length === 44 && textarea.value) {
-      const previousHash = previous.msg.hash
+      let previousHash
+      if (previous && previous.msg) {
+        previousHash = previous.msg.hash
+      } 
       const boxed = await box(textarea.value, to.value)
       const signed = await publish(boxed, previousHash)
       const opened = await open(signed)
@@ -56,7 +59,10 @@ const button = h('button', {
       cachekv.put('latest', JSON.stringify(previous))  
       textarea.value = ''
     } else if (!to.value && textarea.value) {
-      const previousHash = previous.msg.hash
+      let previousHash
+      if (previous && previous.msg) {
+        previousHash = previous.msg.hash
+      } 
       const signed = await publish(textarea.value, previousHash)  
       const opened = await open(signed)
       const blob = await find(opened.data)
